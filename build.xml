@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="POO_Java_TF_Gr2" default="default" basedir=".">
+    <description>Builds, tests, and runs the project POO_Java_TF_Gr2.</description>
+    <import file="nbproject/build-impl.xml"/>
+</project>
