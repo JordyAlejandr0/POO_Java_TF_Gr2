@@ -33,7 +33,12 @@ public class Empleado implements Serializable {
     }
 
     public void setNumeroIdentificacion(String numeroIdentificacion) {
-        this.numeroIdentificacion = numeroIdentificacion;
+        if (numeroIdentificacion == null
+                || numeroIdentificacion.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La identificación del empleado es obligatoria.");
+        }
+        this.numeroIdentificacion = numeroIdentificacion.trim();
     }
 
     public String getNombreCompleto() {
@@ -41,7 +46,11 @@ public class Empleado implements Serializable {
     }
 
     public void setNombreCompleto(String nombreCompleto) {
-        this.nombreCompleto = nombreCompleto;
+        if (nombreCompleto == null || nombreCompleto.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El nombre del empleado es obligatorio.");
+        }
+        this.nombreCompleto = nombreCompleto.trim();
     }
 
     public String getTituloProfesional() {
@@ -49,7 +58,11 @@ public class Empleado implements Serializable {
     }
 
     public void setTituloProfesional(String tituloProfesional) {
-        this.tituloProfesional = tituloProfesional;
+        if (tituloProfesional == null || tituloProfesional.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El título profesional del empleado es obligatorio.");
+        }
+        this.tituloProfesional = tituloProfesional.trim();
     }
 
     public byte getAniosExperiencia() {
@@ -57,6 +70,10 @@ public class Empleado implements Serializable {
     }
 
     public void setAniosExperiencia(byte aniosExperiencia) {
+        if (aniosExperiencia < 0 || aniosExperiencia > 70) {
+            throw new IllegalArgumentException(
+                    "Los años de experiencia deben estar entre 0 y 70.");
+        }
         this.aniosExperiencia = aniosExperiencia;
     }
 
