@@ -418,7 +418,14 @@ public class UsaProyecto extends javax.swing.JFrame {
             throw new IllegalArgumentException(
                     "Escriba la fecha de inicio con el formato aaaa-mm-dd.");
         }
-        LocalDate fechaInicio = LocalDate.parse(jTextFieldFechaInicio.getText().trim());
+        LocalDate fechaInicio;
+        try {
+            fechaInicio = LocalDate.parse(jTextFieldFechaInicio.getText().trim());
+        } catch (DateTimeParseException error) {
+            throw new IllegalArgumentException(
+                    "La fecha de inicio debe tener el formato aaaa-mm-dd, "
+                    + "con guiones. Ej. 2026-02-15.");
+        }
 
         byte duracionEstimada;
         try {
