@@ -459,9 +459,18 @@ public class UsaProyecto extends javax.swing.JFrame {
                 "Equipo del proyecto", JOptionPane.YES_NO_OPTION);
         if (respuesta == JOptionPane.YES_OPTION) {
             int cantidad = pedirEntero("Cantidad de integrantes del equipo:");
-            for (int i = 0; i < cantidad; i++) {
-                objProyecto.agregarIntegrante(
-                        leerEmpleado("INTEGRANTE " + (i + 1) + " DEL EQUIPO"));
+            int registrados = 0;
+            while (registrados < cantidad) {
+                // Si la identificación se repite, se avisa y se vuelve a pedir
+                // ese integrante, sin perder los datos del proyecto.
+                try {
+                    objProyecto.agregarIntegrante(leerEmpleado(
+                            "INTEGRANTE " + (registrados + 1) + " DEL EQUIPO"));
+                    registrados++;
+                } catch (IllegalArgumentException error) {
+                    JOptionPane.showMessageDialog(this, error.getMessage(),
+                            "Dato no válido", JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
 
@@ -568,7 +577,8 @@ public class UsaProyecto extends javax.swing.JFrame {
         }
         for (Proyecto objProyecto : datos) {
             if (objProyecto.getCodigo().equals(codigoProyecto)) {
-                return "GERENTE DEL PROYECTO " + codigoProyecto + "\n"
+                return "GERENTE DEL PROYECTO " + codigoProyecto
+                        + " - " + objProyecto.getTitulo() + "\n"
                         + objProyecto.getSuGerente();
             }
         }
@@ -589,7 +599,8 @@ public class UsaProyecto extends javax.swing.JFrame {
                     return "El proyecto " + codigoProyecto
                             + " aún no tiene equipo asignado.";
                 }
-                String resultado = "EQUIPO DEL PROYECTO " + codigoProyecto + "\n";
+                String resultado = "EQUIPO DEL PROYECTO " + codigoProyecto
+                        + " - " + objProyecto.getTitulo() + "\n";
                 for (Empleado integrante : objProyecto.getSuEquipo()) {
                     resultado += integrante + "\n";
                 }
@@ -702,8 +713,25 @@ public class UsaProyecto extends javax.swing.JFrame {
             if (objProyecto.getCodigo().equals(codigoProyecto)) {
                 int cantidad = pedirEntero("Cantidad de integrantes a registrar:");
                 ArrayList<Empleado> elEquipo = new ArrayList<Empleado>();
-                for (int i = 0; i < cantidad; i++) {
-                    elEquipo.add(leerEmpleado("INTEGRANTE " + (i + 1) + " DEL EQUIPO"));
+                while (elEquipo.size() < cantidad) {
+                    Empleado nuevoIntegrante = leerEmpleado(
+                            "INTEGRANTE " + (elEquipo.size() + 1) + " DEL EQUIPO");
+                    // No se acepta dos veces la misma identificación en el equipo.
+                    boolean estaRepetido = false;
+                    for (Empleado integrante : elEquipo) {
+                        if (integrante.getNumeroIdentificacion()
+                                .equals(nuevoIntegrante.getNumeroIdentificacion())) {
+                            estaRepetido = true;
+                            break;
+                        }
+                    }
+                    if (estaRepetido) {
+                        JOptionPane.showMessageDialog(this,
+                                "El integrante ya pertenece al equipo del proyecto.",
+                                "Dato no válido", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        elEquipo.add(nuevoIntegrante);
+                    }
                 }
                 objProyecto.setSuEquipo(elEquipo);
                 return "Equipo registrado en el proyecto " + codigoProyecto + ".\n"
@@ -976,13 +1004,25 @@ public class UsaProyecto extends javax.swing.JFrame {
 
     /**
      * Solicita los datos de un empleado y lo crea.
+     * Si los años de experiencia no son válidos (0 a 70), avisa y los
+     * vuelve a pedir, sin perder los demás datos ya ingresados.
      */
     private Empleado leerEmpleado(String titulo) {
-        return new Empleado(
-                pedirTexto(titulo + "\nIdentificación:"),
-                pedirTexto(titulo + "\nNombre completo:"),
-                pedirTexto(titulo + "\nTítulo profesional:"),
-                pedirByte(titulo + "\nAños de experiencia:"));
+        String numeroIdentificacion = pedirTexto(titulo + "\nIdentificación:");
+        String nombreCompleto = pedirTexto(titulo + "\nNombre completo:");
+        String tituloProfesional = pedirTexto(titulo + "\nTítulo profesional:");
+        Empleado objEmpleado = null;
+        while (objEmpleado == null) {
+            try {
+                objEmpleado = new Empleado(numeroIdentificacion, nombreCompleto,
+                        tituloProfesional,
+                        pedirByte(titulo + "\nAños de experiencia (0 a 70):"));
+            } catch (IllegalArgumentException error) {
+                JOptionPane.showMessageDialog(this, error.getMessage(),
+                        "Dato no válido", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        return objEmpleado;
     }
 
     /**
