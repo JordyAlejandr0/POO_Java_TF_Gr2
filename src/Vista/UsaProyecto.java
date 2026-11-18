@@ -66,6 +66,15 @@ public class UsaProyecto extends javax.swing.JFrame {
 
     public UsaProyecto() {
         initComponents();
+        // Si el programa se cierra con la X de la ventana, también se
+        // guardan los datos antes de terminar.
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                guardarDatos();
+            }
+        });
+        cargarDatosGuardados();
     }
 
     /**
@@ -303,6 +312,7 @@ public class UsaProyecto extends javax.swing.JFrame {
      * Evento del boton Salir.
      */
     private void jBotonSalirActionPerformed(java.awt.event.ActionEvent evt) {
+        guardarDatos();
         JOptionPane.showMessageDialog(this,
                 "El programa se cerrará. Gracias por utilizar el servicio.");
         System.exit(0);
@@ -875,6 +885,39 @@ public class UsaProyecto extends javax.swing.JFrame {
             return losClientes;
         }
         return datos;
+    }
+
+    // ==================== GUARDADO AUTOMÁTICO ====================
+
+    /**
+     * Al abrir el programa, carga los proyectos y los clientes que se
+     * guardaron la última vez, si los archivos de objetos existen.
+     */
+    private void cargarDatosGuardados() {
+        if (new File(ARCHIVO_PROYECTOS).exists()) {
+            losProyectos = leerArchivoDeObjetosProyectos();
+        }
+        if (new File(ARCHIVO_CLIENTES).exists()) {
+            losClientes = leerArchivoDeObjetosClientes();
+        }
+        if (losProyectos.isEmpty()) {
+            mostrar("No hay proyectos registrados.");
+        } else {
+            mostrar("Se cargaron " + losProyectos.size()
+                    + " proyecto(s) guardados la última vez.\n"
+                    + "Use la operación 1 para consultarlos.");
+        }
+    }
+
+    /**
+     * Al cerrar el programa, guarda los proyectos y los clientes en los
+     * archivos de objetos para que no se pierdan.
+     */
+    private void guardarDatos() {
+        if (!losProyectos.isEmpty()) {
+            generarArchivoDeObjetosProyectos(losProyectos);
+            generarArchivoDeObjetosClientes(losProyectos);
+        }
     }
 
     // ==================== MÉTODOS AUXILIARES ====================
