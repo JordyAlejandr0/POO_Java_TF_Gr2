@@ -6,6 +6,7 @@ Universidad Autónoma de Occidente. Docente: Sandra Lucía Guañarita Fernández
 
 ## Equipo
 
+- Jhoana Valentina Flor Otalora
 - Jordy Alejandro Catamuscay
 - Samuel Vergara Palacios
 - Joshua David Angulo Murillo
