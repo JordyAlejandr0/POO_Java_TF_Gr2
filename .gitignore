@@ -1,0 +1,11 @@
+# Compilados y distribuciones que genera NetBeans
+build/
+dist/
+nbproject/private/
+
+# Archivos de objetos que genera el aplicativo al ejecutarse
+datosProyectos
+datosClientes
+
+# Archivos del sistema operativo
+.DS_Store
